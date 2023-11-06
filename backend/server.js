@@ -6,7 +6,7 @@ const app = express();
 const server = http.createServer(app);
 
 const io = new Server(server, {
-    // pingTimeout: 60000,
+    pingTimeout: 60000,
     cors: {
         origin: 'http://localhost:3000'
     }
@@ -17,14 +17,11 @@ const PORT = 5000;
 let rooms = [];
 let room = 0;
 let roomId=-1;
-var users = 0;
 let roomSet = new Set();
 
 io.on('connection', (socket)=>{
-    users++;
-    console.log("users: ", users);
     console.log("A user connected");
-
+    
     if(rooms.length){
         roomId = rooms[0];
     }else{
@@ -32,20 +29,23 @@ io.on('connection', (socket)=>{
         roomSet.add(roomId);
         rooms.unshift(roomId);
     } 
-
-    if(users>=2){
-        users = 0;
+    socket.join(roomId);
+    const usersInRoom = io.sockets.adapter.rooms.get(roomId);
+    const userCount = usersInRoom ? usersInRoom.size : 0;
+    if(userCount==2){
         roomSet.delete(rooms[0]);
         rooms.shift();
     }
-    console.log("ROOMS: ", rooms);
-    console.log("RoomSet: ", roomSet);
-    console.log("roomId: ", roomId);
-    socket.join(roomId);
+
+
+    console.log("userCount: ", userCount);
+    console.log('Roomid: ', roomId);
     socket.emit('getRoom', roomId)
 
     socket.roomId = roomId;
-    
+
+    // console.log(`UsersInROoM: ${roomId} : `, userCount);
+    io.to(roomId).emit('user count', userCount);
 
 
     socket.on('message', (message)=>{
@@ -60,6 +60,11 @@ io.on('connection', (socket)=>{
             rooms.push(socket.roomId)
             roomSet.add(socket.roomId);
         } 
+        const usersInRoom = io.sockets.adapter.rooms.get(socket.roomId);
+        const userCount = usersInRoom ? usersInRoom.size : 0;
+        console.log("USerInRoom: ", usersInRoom);
+        console.log("userCount during disconnection:", userCount);
+        
         io.to(socket.roomId).emit('roomStatus', "User left");
 
         console.log("A user disconnected from room: ", socket.roomId);
