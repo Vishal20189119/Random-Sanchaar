@@ -1,9 +1,26 @@
 import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
+import path from 'path'
+import dotenv from 'dotenv'
+
+dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
+
+const __dirname1 = path.resolve();
+if(process.env.NODE_ENV==='production'){
+    app.use(express.static(path.join(__dirname1, "/frontend/build")))
+
+    app.get("*", (req, res)=>{
+        res.sendFile(path.resolve(__dirname1, "frontend", "build", "index.html"))
+    })
+}else{
+    app.get('/', (req, res)=>{
+        res.send("API is running Successfully")
+    })
+}
 
 const io = new Server(server, {
     pingTimeout: 60000,

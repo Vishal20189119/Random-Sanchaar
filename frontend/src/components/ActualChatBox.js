@@ -31,7 +31,6 @@ export default function ActualChatBox() {
   };
 
   useEffect(() => { 
-    console.log("Just after the component mounted: ", chatContainerRef);  //This is shwoing chatContainerRef.current to be null don't know why, according to me it should give some values
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
@@ -40,7 +39,7 @@ export default function ActualChatBox() {
   }, [messageList]);
   useEffect(()=>{
     if(both) messageInputRef.current.focus();
-  })
+  }, [both])
 
   useEffect(() => {
     socketRef.current = io('http://localhost:5000');
@@ -68,7 +67,6 @@ export default function ActualChatBox() {
     })
     
     return () => {
-      console.log("Unmounting happening");
       socketRef.current.disconnect();
     };
   }, [toggleChat]);
