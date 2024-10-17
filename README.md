@@ -1,6 +1,8 @@
 # Random-Sanchaar
 In this i had made a very basic ui and logic to connect random people and start chatting between them. I made this project to learn socket.io for another project hence it is a very basic project.
 
+https://random-sanchaar-2.onrender.com/
+
 To use this app first install all the dependencies using command:  
 `npm i`
 
