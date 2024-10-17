@@ -1,2 +1,3 @@
 import io from 'socket.io-client'
-export const socket = io('http://localhost:5000')
+let url = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+export const socket = io(url);

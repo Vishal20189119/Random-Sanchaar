@@ -25,10 +25,12 @@ if(process.env.NODE_ENV==='production'){
 const io = new Server(server, {
     pingTimeout: 60000,
     cors: {
-        origin: 'http://localhost:3000'
+        origin: process.env.FRONTEND_URL || 'http://localhost:3000'
     }
 });
-const PORT = 5000;
+console.log("The frontend url is: ", process.env.FRONTEND_URL);
+console.log("The process.env is: ", process.env.PORT);
+const PORT = process.env.PORT || 5000;
 
 
 let rooms = [];
