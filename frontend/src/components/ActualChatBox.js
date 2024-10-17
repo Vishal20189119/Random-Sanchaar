@@ -42,7 +42,8 @@ export default function ActualChatBox() {
   }, [both])
 
   useEffect(() => {
-    socketRef.current = io('http://localhost:5000');
+    let url = process.env.REACT_APP_BACKEND_URL || "https://random-sanchaar-msj0.onrender.com";
+    socketRef.current = io(url);
 
     socketRef.current.on('connect', () => {
       // The connection is established, and you can now access socket.id
